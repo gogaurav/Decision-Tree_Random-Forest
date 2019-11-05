@@ -165,16 +165,15 @@ class DecisionTree:
         else:
             self.tree[cur_node_id]['leaf'] = True
 
-    def learn(self, x_train, y_train):
+    def fit(self, x_train, y_train):
         self._generate_tree(x_train, y_train)
-        # if self.print_flag:
-            # print("#Nodes: {0}".format(len(self.tree)), end='; ')
-        return self.tree
+        if self.print_flag:
+            print("#Nodes: {0}".format(len(self.tree)), end='; ')
         # with open('tree_dict_dump.txt', 'w') as f:
         #     for i in self.tree.items():
         #         f.write(str(i) + '\n')
 
-    def classify(self, x_test):
+    def predict(self, x_test):
         results = []
         len_data = len(x_test)
         for i in range(len_data):

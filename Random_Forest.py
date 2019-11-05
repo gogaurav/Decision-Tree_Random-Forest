@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
+# Author: Gourang Gaurav
 
 import numpy as np
 from Decision_Tree import DecisionTree
 import Cross_Validation as cv
 import random
+import time
 
 
 class RandomForestClassifier:
@@ -29,9 +31,12 @@ class RandomForestClassifier:
         self.max_features = max_features
         self.print_flag = print_flag
 
-    def learn(self, x_train, y_train):
+    def fit(self, x_train, y_train):
         len_train_data = len(x_train)
         for i in range(self.no_estimators):
+            print(("\rRunning estimator {0}/{1}"
+                   "...".format(i+1, self.no_estimators)), end='')
+            # time.sleep(1)
             if self.bootstrap:
                 idx = np.random.randint(0, len_train_data, len_train_data)
                 x_train_tree = x_train[idx]
@@ -44,15 +49,16 @@ class RandomForestClassifier:
                 random_state=None, split_measure=self.split_measure,
                 min_impurity_split=self.min_impurity_split, max_depth=self.max_depth,
                 min_samples_split=self.min_samples_split, no_splits=self.no_splits,
-                max_features=self.max_features, print_flag=self.print_flag
+                max_features=self.max_features, print_flag=False
             )
-            dt.learn(x_train_tree, y_train_tree)
+            dt.fit(x_train_tree, y_train_tree)
             self.fitted_trees.append(dt)
+        print("\r")
 
-    def classify(self, x_test):
+    def predict(self, x_test):
         trees_output = []
         for i in range(self.no_estimators):
-            trees_output.append(self.fitted_trees[i].classify(x_test))
+            trees_output.append(self.fitted_trees[i].predict(x_test))
 
         trees_output = np.array(trees_output)
         preds = []
